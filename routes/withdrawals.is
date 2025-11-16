@@ -1,0 +1,15 @@
+const express = require('express');
+const {
+  createWithdrawal,
+  getUserWithdrawals
+} = require('../controllers/withdrawalController');
+const { auth } = require('../middleware/auth');
+
+const router = express.Router();
+
+router.use(auth);
+
+router.post('/', createWithdrawal);
+router.get('/', getUserWithdrawals);
+
+module.exports = router;
