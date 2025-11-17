@@ -1,0 +1,358 @@
+const mongoose = require('mongoose');
+const InvestmentPlan = require('../models/InvestmentPlan');
+
+const advancedPlans = [
+  // 🟢 TIER 1: ENTRY LEVEL PLANS (₦3,500 - ₦13,500)
+  {
+    name: "Starter Bronze",
+    description: "Perfect for beginners with minimal risk. Ideal for testing the platform.",
+    min_amount: 3500,
+    max_amount: 10000,
+    daily_interest: 2.5,
+    total_interest: 25,
+    duration: 10,
+    risk_level: "low",
+    category: "entry",
+    features: [
+      "Daily returns",
+      "10-day duration", 
+      "Low risk profile",
+      "Instant withdrawal",
+      "24/7 support"
+    ],
+    is_popular: false,
+    is_active: true
+  },
+  {
+    name: "Silver Growth",
+    description: "Balanced growth plan for new investors seeking steady returns.",
+    min_amount: 13500,
+    max_amount: 25000,
+    daily_interest: 3.0,
+    total_interest: 36,
+    duration: 12,
+    risk_level: "low",
+    category: "entry",
+    features: [
+      "Higher daily returns",
+      "12-day duration",
+      "Capital protection",
+      "Auto-renewal option",
+      "Priority support"
+    ],
+    is_popular: true,
+    is_active: true
+  },
+
+  // 🟡 TIER 2: GROWTH PLANS (₦23,500 - ₦53,500)
+  {
+    name: "Gold Accelerator",
+    description: "Accelerated growth plan for serious investors with moderate risk tolerance.",
+    min_amount: 23500,
+    max_amount: 50000,
+    daily_interest: 3.8,
+    total_interest: 53,
+    duration: 14,
+    risk_level: "medium",
+    category: "growth",
+    features: [
+      "Premium returns",
+      "14-day cycle",
+      "Medium risk",
+      "Weekly compounding",
+      "Dedicated account manager"
+    ],
+    is_popular: false,
+    is_active: true
+  },
+  {
+    name: "Platinum Pro",
+    description: "Professional investment plan with optimized risk-reward ratio.",
+    min_amount: 33500,
+    max_amount: 75000,
+    daily_interest: 4.2,
+    total_interest: 67,
+    duration: 16,
+    risk_level: "medium",
+    category: "growth",
+    features: [
+      "Enhanced returns",
+      "16-day duration", 
+      "Risk management",
+      "Advanced analytics",
+      "Personalized insights"
+    ],
+    is_popular: true,
+    is_active: true
+  },
+  {
+    name: "Diamond Elite",
+    description: "Elite growth plan for investors seeking substantial returns.",
+    min_amount: 43500,
+    max_amount: 100000,
+    daily_interest: 4.8,
+    total_interest: 86,
+    duration: 18,
+    risk_level: "medium",
+    category: "growth",
+    features: [
+      "Premium elite returns",
+      "18-day cycle",
+      "Portfolio diversification",
+      "Market analysis reports",
+      "VIP support"
+    ],
+    is_popular: false,
+    is_active: true
+  },
+  {
+    name: "Executive Premium",
+    description: "Executive plan designed for maximum growth with controlled risk.",
+    min_amount: 53500,
+    max_amount: 150000,
+    daily_interest: 5.2,
+    total_interest: 104,
+    duration: 20,
+    risk_level: "medium-high",
+    category: "growth",
+    features: [
+      "Executive returns",
+      "20-day duration",
+      "Advanced risk control",
+      "Monthly strategy sessions",
+      "Executive concierge"
+    ],
+    is_popular: true,
+    is_active: true
+  },
+
+  // 🔵 TIER 3: PREMIUM PLANS (₦63,500 - ₦103,500)
+  {
+    name: "Wealth Builder",
+    description: "Strategic wealth building plan for long-term investors.",
+    min_amount: 63500,
+    max_amount: 200000,
+    daily_interest: 5.8,
+    total_interest: 127,
+    duration: 22,
+    risk_level: "medium-high",
+    category: "premium",
+    features: [
+      "Wealth acceleration",
+      "22-day cycle",
+      "Strategic allocation",
+      "Quarterly reviews",
+      "Wealth management advice"
+    ],
+    is_popular: false,
+    is_active: true
+  },
+  {
+    name: "Fortune Creator",
+    description: "Create lasting fortune with this high-performance investment plan.",
+    min_amount: 73500,
+    max_amount: 250000,
+    daily_interest: 6.2,
+    total_interest: 149,
+    duration: 24,
+    risk_level: "high",
+    category: "premium",
+    features: [
+      "Fortune-level returns",
+      "24-day duration",
+      "High growth potential",
+      "Exclusive market opportunities",
+      "Fortune building strategy"
+    ],
+    is_popular: true,
+    is_active: true
+  },
+  {
+    name: "Legacy Wealth",
+    description: "Build generational wealth with this premium long-term plan.",
+    min_amount: 83500,
+    max_amount: 300000,
+    daily_interest: 6.8,
+    total_interest: 177,
+    duration: 26,
+    risk_level: "high",
+    category: "premium",
+    features: [
+      "Legacy building returns",
+      "26-day cycle",
+      "Multi-generational focus",
+      "Estate planning consultation",
+      "Legacy advisor access"
+    ],
+    is_popular: false,
+    is_active: true
+  },
+  {
+    name: "Empire Builder",
+    description: "For visionary investors building financial empires.",
+    min_amount: 93500,
+    max_amount: 400000,
+    daily_interest: 7.2,
+    total_interest: 202,
+    duration: 28,
+    risk_level: "high",
+    category: "premium",
+    features: [
+      "Empire-scale returns",
+      "28-day duration",
+      "Visionary investments",
+      "Empire strategy sessions",
+      "Global opportunity access"
+    ],
+    is_popular: true,
+    is_active: true
+  },
+
+  // 🟣 TIER 4: ULTRA PREMIUM PLANS (₦113,500 - ₦143,500)
+  {
+    name: "Titan Investor",
+    description: "Titan-level investment plan for ultra-high net worth individuals.",
+    min_amount: 113500,
+    max_amount: 500000,
+    daily_interest: 7.8,
+    total_interest: 234,
+    duration: 30,
+    risk_level: "very-high",
+    category: "ultra-premium",
+    features: [
+      "Titan-level returns",
+      "30-day cycle",
+      "Ultra-premium opportunities",
+      "Titan concierge service",
+      "Global market access"
+    ],
+    is_popular: false,
+    is_active: true
+  },
+  {
+    name: "Visionary Pro",
+    description: "For visionary professionals seeking exceptional returns.",
+    min_amount: 123500,
+    max_amount: 750000,
+    daily_interest: 8.2,
+    total_interest: 262,
+    duration: 32,
+    risk_level: "very-high",
+    category: "ultra-premium",
+    features: [
+      "Visionary returns",
+      "32-day duration",
+      "Cutting-edge opportunities",
+      "Visionary network access",
+      "Future market insights"
+    ],
+    is_popular: true,
+    is_active: true
+  },
+  {
+    name: "Alpha Investor",
+    description: "Alpha-seeking investment plan for maximum market outperformance.",
+    min_amount: 133500,
+    max_amount: 1000000,
+    daily_interest: 8.8,
+    total_interest: 299,
+    duration: 34,
+    risk_level: "very-high",
+    category: "ultra-premium",
+    features: [
+      "Alpha returns",
+      "34-day cycle",
+      "Market outperformance focus",
+      "Alpha strategy team",
+      "Exclusive alpha opportunities"
+    ],
+    is_popular: false,
+    is_active: true
+  },
+  {
+    name: "Omega Elite",
+    description: "The ultimate investment plan for sophisticated investors.",
+    min_amount: 143500,
+    max_amount: 1500000,
+    daily_interest: 9.2,
+    total_interest: 331,
+    duration: 36,
+    risk_level: "very-high",
+    category: "ultra-premium",
+    features: [
+      "Omega elite returns",
+      "36-day duration",
+      "Sophisticated strategies",
+      "Omega elite concierge",
+      "Global elite network"
+    ],
+    is_popular: true,
+    is_active: true
+  },
+
+  // 🔴 TIER 5: EXCLUSIVE PLANS (₦153,500+)
+  {
+    name: "Infinity Wealth",
+    description: "The pinnacle of investment plans - unlimited potential returns.",
+    min_amount: 153500,
+    max_amount: 5000000,
+    daily_interest: 10.0,
+    total_interest: 400,
+    duration: 40,
+    risk_level: "maximum",
+    category: "exclusive",
+    features: [
+      "Infinity returns potential",
+      "40-day cycle",
+      "Unlimited opportunities",
+      "Infinity concierge",
+      "Global exclusive deals",
+      "Personal investment committee"
+    ],
+    is_popular: false,
+    is_active: true
+  }
+];
+
+const seedPlans = async () => {
+  try {
+    console.log('🌱 Seeding advanced investment plans...');
+    
+    await InvestmentPlan.deleteMany({});
+    await InvestmentPlan.insertMany(advancedPlans);
+    
+    console.log('✅ 15 Premium investment plans seeded successfully!');
+    console.log('📊 Plan Distribution:');
+    console.log('   🟢 Entry Level: 2 plans (₦3,500 - ₦25,000)');
+    console.log('   🟡 Growth: 4 plans (₦23,500 - ₦150,000)');
+    console.log('   🔵 Premium: 4 plans (₦63,500 - ₦400,000)');
+    console.log('   🟣 Ultra Premium: 4 plans (₦113,500 - ₦1,500,000)');
+    console.log('   🔴 Exclusive: 1 plan (₦153,500 - ₦5,000,000)');
+    
+  } catch (error) {
+    console.error('❌ Seeding error:', error);
+    throw error;
+  }
+};
+
+// Run if called directly
+if (require.main === module) {
+  require('dotenv').config();
+  const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/raw-wealthy';
+  
+  mongoose.connect(MONGODB_URI)
+    .then(() => {
+      console.log('📡 Connected to MongoDB for advanced seeding');
+      return seedPlans();
+    })
+    .then(() => {
+      console.log('🎉 Advanced seeding completed successfully!');
+      process.exit(0);
+    })
+    .catch(error => {
+      console.error('💥 Advanced seeding failed:', error);
+      process.exit(1);
+    });
+}
+
+module.exports = { seedPlans, advancedPlans };
