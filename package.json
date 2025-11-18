@@ -1,15 +1,23 @@
 {
   "name": "raw-wealthy-backend-pro",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Production-Ready Raw Wealthy Investment Platform Backend - FULLY INTEGRATED",
+  "license": "MIT",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "render-build": "npm install && npm run create-env",
-    "create-env": "node -e \"const fs = require('fs'); if (!fs.existsSync('.env')) { fs.writeFileSync('.env', 'NODE_ENV=production\\nPORT=10000\\nMONGODB_URI=mongodb://localhost:27017/raw-wealthy\\nJWT_SECRET=temp-jwt-secret-for-render-deployment\\nCLIENT_URL=https://your-frontend.vercel.app\\n'); console.log('✅ Created .env file for Render'); }\"",
+    "prod": "NODE_ENV=production node server.js",
     "test": "jest --verbose --coverage",
-    "seed": "node utils/seeder.js"
+    "test:watch": "jest --watch",
+    "test:integration": "jest --testPathPattern=integration",
+    "seed": "node utils/seeder.js",
+    "migrate": "node utils/migration.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "docker:build": "docker build -t raw-wealthy-backend .",
+    "docker:run": "docker run -p 5000:5000 raw-wealthy-backend",
+    "build": "yarn install"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -19,7 +27,7 @@
     "cors": "^2.8.5",
     "helmet": "^7.1.0",
     "dotenv": "^16.3.1",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.0",
     "express-rate-limit": "^7.1.5",
     "express-validator": "^7.0.1",
     "nodemailer": "^6.9.7",
@@ -32,6 +40,7 @@
     "redis": "^4.6.10",
     "socket.io": "^4.7.4",
     "express-mongo-sanitize": "^2.2.0",
+    "xss-clean": "^0.1.4",
     "cloudinary": "^1.41.0",
     "uuid": "^9.0.1",
     "axios": "^1.6.2",
@@ -42,15 +51,32 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "express-fileupload": "^1.4.3",
-    "cookie-parser": "^1.4.6"
+    "cookie-parser": "^1.4.6",
+    "hpp": "^0.2.3",
+    "express-useragent": "^1.0.15",
+    "request-ip": "^3.3.0",
+    "node-fetch": "^3.3.2",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
     "jest": "^29.7.0",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1"
   },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
-  }
+  },
+  "keywords": [
+    "investment",
+    "platform",
+    "raw-materials",
+    "fintech",
+    "backend",
+    "api"
+  ],
+  "author": "Raw Wealthy Team"
 }
